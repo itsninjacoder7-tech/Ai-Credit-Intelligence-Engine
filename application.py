@@ -517,11 +517,15 @@ Machine Learning Enthusiast | Aspiring Data Scientist
 # Clean Links (Same Font – No Buttons ❌)
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-col1, col2 = st.sidebar.columns(2, gap="small")
+col1, col2, col3 = st.sidebar.columns([1,1,1])
 
 with col1:
+    st.empty()  # left spacer
+
+with col2:
     st.markdown("""
-    <div style="display:flex; justify-content:center;">
+    <div style="display:flex; gap:10px; justify-content:center;">
+
         <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank">
             <div style="
                 display:flex;
@@ -538,12 +542,7 @@ with col1:
                 </svg>
             </div>
         </a>
-    </div>
-    """, unsafe_allow_html=True)
 
-with col2:
-    st.markdown("""
-    <div style="display:flex; justify-content:center;">
         <a href="https://github.com/Arnav-Singh-5080" target="_blank">
             <div style="
                 display:flex;
@@ -560,8 +559,12 @@ with col2:
                 </svg>
             </div>
         </a>
+
     </div>
     """, unsafe_allow_html=True)
+
+with col3:
+    st.empty()  # right spacer
 
 # st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
