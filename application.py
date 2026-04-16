@@ -517,15 +517,12 @@ Machine Learning Enthusiast | Aspiring Data Scientist
 # Clean Links (Same Font – No Buttons ❌)
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-col1, col2, col3 = st.sidebar.columns([1,1,1])
+col1, col2, col3 = st.sidebar.columns(3, gap="small")
 
+# LinkedIn
 with col1:
-    st.empty()  # left spacer
-
-with col2:
     st.markdown("""
-    <div style="display:flex; gap:10px; justify-content:center;">
-
+    <div style="display:flex; justify-content:center;">
         <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank">
             <div style="
                 display:flex;
@@ -542,7 +539,36 @@ with col2:
                 </svg>
             </div>
         </a>
+    </div>
+    """, unsafe_allow_html=True)
 
+# Email (CENTER)
+with col2:
+    st.markdown("""
+    <div style="display:flex; justify-content:center;">
+        <a href="mailto:itsarnav.singh80@gmail.com">
+            <div style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:40px;
+                height:40px;
+                border-radius:12px;
+                background:rgba(0,255,150,0.08);
+                border:1px solid rgba(0,255,150,0.25);
+            ">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#00FFAA">
+                <path d="M2 4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4V20C22 21.1 21.1 22 20 22H4C2.9 22 2 21.1 2 20V4ZM4 4V6L12 13L20 6V4L12 11L4 4ZM20 8L12 15L4 8V20H20V8Z"/>
+                </svg>
+            </div>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+
+# GitHub
+with col3:
+    st.markdown("""
+    <div style="display:flex; justify-content:center;">
         <a href="https://github.com/Arnav-Singh-5080" target="_blank">
             <div style="
                 display:flex;
@@ -559,12 +585,8 @@ with col2:
                 </svg>
             </div>
         </a>
-
     </div>
     """, unsafe_allow_html=True)
-
-with col3:
-    st.empty()  # right spacer
 
 # st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
