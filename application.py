@@ -532,7 +532,6 @@ st.sidebar.markdown("[🔗 LinkedIn](https://www.linkedin.com/in/arnav-singh-a87
 
 # -----------------------------------
 # Load Model
-@@ -147,156 +469,210 @@
 def calculate_emi(principal, tenure_months, annual_rate=10):
     if principal == 0 or tenure_months == 0:
         return 0
