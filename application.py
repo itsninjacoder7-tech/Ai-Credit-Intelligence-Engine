@@ -516,9 +516,26 @@ Machine Learning Enthusiast | Aspiring Data Scientist
 
 # Clean Links (Same Font – No Buttons ❌)
 st.sidebar.markdown("""
-<div style="margin-top:14px; font-size:14px; line-height:2; color:#4EA1FF;">
-🔗 <a href="https://www.linkedin.com/in/arnav-singh-a87847351">LinkedIn</a><br>
-💻 <a href="https://github.com/Arnav-Singh-5080">GitHub</a>
+<div style="margin-top:14px; font-size:14px;">
+
+<p>
+🔗 <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank"
+style="color:#4EA1FF; text-decoration:none; font-weight:500;"
+onmouseover="this.style.color='#C9A84C'"
+onmouseout="this.style.color='#4EA1FF'">
+LinkedIn
+</a>
+</p>
+
+<p>
+💻 <a href="https://github.com/Arnav-Singh-5080" target="_blank"
+style="color:#4EA1FF; text-decoration:none; font-weight:500;"
+onmouseover="this.style.color='#C9A84C'"
+onmouseout="this.style.color='#4EA1FF'">
+GitHub
+</a>
+</p>
+
 </div>
 """, unsafe_allow_html=True)
 
