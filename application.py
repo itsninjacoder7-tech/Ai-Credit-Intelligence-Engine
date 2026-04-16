@@ -519,17 +519,16 @@ st.sidebar.markdown("""
 <div style="
     margin-top:12px;
     display:flex;
-    gap:10px;
+    gap:12px;
 ">
 
-<!-- LinkedIn -->
 <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank"
 style="
     display:flex;
     align-items:center;
     justify-content:center;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
     border-radius:10px;
     background:rgba(78,161,255,0.08);
     border:1px solid rgba(78,161,255,0.2);
@@ -541,14 +540,13 @@ style="
 
 </a>
 
-<!-- GitHub -->
 <a href="https://github.com/Arnav-Singh-5080" target="_blank"
 style="
     display:flex;
     align-items:center;
     justify-content:center;
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
     border-radius:10px;
     background:rgba(255,255,255,0.05);
     border:1px solid rgba(255,255,255,0.15);
