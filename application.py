@@ -517,46 +517,50 @@ Machine Learning Enthusiast | Aspiring Data Scientist
 # Clean Links (Same Font – No Buttons ❌)
 st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
-col1, col2, col3 = st.sidebar.columns([1,1,3])
+col1, col2 = st.sidebar.columns(2, gap="small")
 
 with col1:
     st.markdown("""
-    <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank">
-        <div style="
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            width:36px;
-            height:36px;
-            border-radius:10px;
-            background:rgba(78,161,255,0.08);
-            border:1px solid rgba(78,161,255,0.2);
-        ">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#4EA1FF">
-            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.49 6C1.11 6 0 4.88 0 3.5C0 2.12 1.11 1 2.49 1C3.87 1 4.98 2.12 4.98 3.5ZM0.22 8.98H4.75V24H0.22V8.98ZM7.98 8.98H12.32V11.04H12.38C13.04 9.86 14.66 8.63 17.04 8.63C22.08 8.63 23 11.88 23 16.13V24H18.47V17.21C18.47 15.46 18.44 13.2 16.02 13.2C13.56 13.2 13.18 15.06 13.18 17.08V24H8.65V8.98H7.98Z"/>
-            </svg>
-        </div>
-    </a>
+    <div style="display:flex; justify-content:center;">
+        <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank">
+            <div style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:40px;
+                height:40px;
+                border-radius:12px;
+                background:rgba(78,161,255,0.08);
+                border:1px solid rgba(78,161,255,0.2);
+            ">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#4EA1FF">
+                <path d="M4.98 3.5C4.98 4.88 3.87 6 2.49 6C1.11 6 0 4.88 0 3.5C0 2.12 1.11 1 2.49 1C3.87 1 4.98 2.12 4.98 3.5ZM0.22 8.98H4.75V24H0.22V8.98ZM7.98 8.98H12.32V11.04H12.38C13.04 9.86 14.66 8.63 17.04 8.63C22.08 8.63 23 11.88 23 16.13V24H18.47V17.21C18.47 15.46 18.44 13.2 16.02 13.2C13.56 13.2 13.18 15.06 13.18 17.08V24H8.65V8.98H7.98Z"/>
+                </svg>
+            </div>
+        </a>
+    </div>
     """, unsafe_allow_html=True)
 
 with col2:
     st.markdown("""
-    <a href="https://github.com/Arnav-Singh-5080" target="_blank">
-        <div style="
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            width:36px;
-            height:36px;
-            border-radius:10px;
-            background:rgba(255,255,255,0.05);
-            border:1px solid rgba(255,255,255,0.15);
-        ">
-            <svg height="16" width="16" viewBox="0 0 16 16" fill="#4EA1FF">
-            <path d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.6C5.87 15.67 6.02 15.43 6.02 15.23C6.02 15.05 6.01 14.5 6.01 13.88C4 14.26 3.48 12.92 3.32 12.41C3.23 12.16 2.84 11.36 2.5 11.18C2.22 11.03 1.82 10.68 2.49 10.67C3.12 10.66 3.58 11.25 3.73 11.5C4.45 12.71 5.59 12.36 6.05 12.14C6.12 11.62 6.33 11.25 6.56 11.04C4.78 10.84 2.91 10.15 2.91 7.13C2.91 6.27 3.22 5.55 3.73 4.98C3.65 4.78 3.36 3.95 3.81 2.81C3.81 2.81 4.49 2.59 6.01 3.58C6.65 3.4 7.33 3.31 8.01 3.31C8.69 3.31 9.37 3.4 10.01 3.58C11.53 2.58 12.21 2.81 12.21 2.81C12.66 3.95 12.37 4.78 12.29 4.98C12.8 5.55 13.11 6.27 13.11 7.13C13.11 10.16 11.23 10.84 9.45 11.04C9.74 11.29 10 11.77 10 12.54C10 13.64 9.99 14.93 9.99 15.23C9.99 15.43 10.14 15.68 10.54 15.6C13.71 14.53 16 11.54 16 8C16 3.58 12.42 0 8 0Z"/>
-            </svg>
-        </div>
-    </a>
+    <div style="display:flex; justify-content:center;">
+        <a href="https://github.com/Arnav-Singh-5080" target="_blank">
+            <div style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:40px;
+                height:40px;
+                border-radius:12px;
+                background:rgba(255,255,255,0.05);
+                border:1px solid rgba(255,255,255,0.15);
+            ">
+                <svg height="18" width="18" viewBox="0 0 16 16" fill="#4EA1FF">
+                <path d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.6C5.87 15.67 6.02 15.43 6.02 15.23C6.02 15.05 6.01 14.5 6.01 13.88C4 14.26 3.48 12.92 3.32 12.41C3.23 12.16 2.84 11.36 2.5 11.18C2.22 11.03 1.82 10.68 2.49 10.67C3.12 10.66 3.58 11.25 3.73 11.5C4.45 12.71 5.59 12.36 6.05 12.14C6.12 11.62 6.33 11.25 6.56 11.04C4.78 10.84 2.91 10.15 2.91 7.13C2.91 6.27 3.22 5.55 3.73 4.98C3.65 4.78 3.36 3.95 3.81 2.81C3.81 2.81 4.49 2.59 6.01 3.58C6.65 3.4 7.33 3.31 8.01 3.31C8.69 3.31 9.37 3.4 10.01 3.58C11.53 2.58 12.21 2.81 12.21 2.81C12.66 3.95 12.37 4.78 12.29 4.98C12.8 5.55 13.11 6.27 13.11 7.13C13.11 10.16 11.23 10.84 9.45 11.04C9.74 11.29 10 11.77 10 12.54C10 13.64 9.99 14.93 9.99 15.23C9.99 15.43 10.14 15.68 10.54 15.6C13.71 14.53 16 11.54 16 8C16 3.58 12.42 0 8 0Z"/>
+                </svg>
+            </div>
+        </a>
+    </div>
     """, unsafe_allow_html=True)
 
 # st.sidebar.markdown("<br>", unsafe_allow_html=True)
