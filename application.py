@@ -535,7 +535,7 @@ st.sidebar.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.sidebar.markdown("<br>", unsafe_allow_html=True)
+# st.sidebar.markdown("<br>", unsafe_allow_html=True)
 
 # Optional CTA
 st.sidebar.markdown("""
