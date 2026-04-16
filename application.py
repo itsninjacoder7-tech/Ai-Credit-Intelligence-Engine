@@ -518,20 +518,28 @@ Machine Learning Enthusiast | Aspiring Data Scientist
 st.sidebar.markdown("""
 <div style="margin-top:14px; font-size:14px;">
 
-<p>
-🔗 <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank"
-style="color:#4EA1FF; text-decoration:none; font-weight:500;"
-onmouseover="this.style.color='#C9A84C'"
-onmouseout="this.style.color='#4EA1FF'">
+<!-- LinkedIn -->
+<p style="display:flex; align-items:center; gap:8px; margin:0;">
+<a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank"
+style="text-decoration:none; color:#4EA1FF; display:flex; align-items:center; gap:8px;">
+
+<svg width="18" height="18" viewBox="0 0 24 24" fill="#4EA1FF">
+<path d="M4.98 3.5C4.98 4.88 3.87 6 2.49 6C1.11 6 0 4.88 0 3.5C0 2.12 1.11 1 2.49 1C3.87 1 4.98 2.12 4.98 3.5ZM0.22 8.98H4.75V24H0.22V8.98ZM7.98 8.98H12.32V11.04H12.38C13.04 9.86 14.66 8.63 17.04 8.63C22.08 8.63 23 11.88 23 16.13V24H18.47V17.21C18.47 15.46 18.44 13.2 16.02 13.2C13.56 13.2 13.18 15.06 13.18 17.08V24H8.65V8.98H7.98Z"/>
+</svg>
+
 LinkedIn
 </a>
 </p>
 
-<p>
-💻 <a href="https://github.com/Arnav-Singh-5080" target="_blank"
-style="color:#4EA1FF; text-decoration:none; font-weight:500;"
-onmouseover="this.style.color='#C9A84C'"
-onmouseout="this.style.color='#4EA1FF'">
+<!-- GitHub -->
+<p style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+<a href="https://github.com/Arnav-Singh-5080" target="_blank"
+style="text-decoration:none; color:#4EA1FF; display:flex; align-items:center; gap:8px;">
+
+<svg height="18" width="18" viewBox="0 0 16 16" fill="#4EA1FF">
+<path d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.6C5.87 15.67 6.02 15.43 6.02 15.23C6.02 15.05 6.01 14.5 6.01 13.88C4 14.26 3.48 12.92 3.32 12.41C3.23 12.16 2.84 11.36 2.5 11.18C2.22 11.03 1.82 10.68 2.49 10.67C3.12 10.66 3.58 11.25 3.73 11.5C4.45 12.71 5.59 12.36 6.05 12.14C6.12 11.62 6.33 11.25 6.56 11.04C4.78 10.84 2.91 10.15 2.91 7.13C2.91 6.27 3.22 5.55 3.73 4.98C3.65 4.78 3.36 3.95 3.81 2.81C3.81 2.81 4.49 2.59 6.01 3.58C6.65 3.4 7.33 3.31 8.01 3.31C8.69 3.31 9.37 3.4 10.01 3.58C11.53 2.58 12.21 2.81 12.21 2.81C12.66 3.95 12.37 4.78 12.29 4.98C12.8 5.55 13.11 6.27 13.11 7.13C13.11 10.16 11.23 10.84 9.45 11.04C9.74 11.29 10 11.77 10 12.54C10 13.64 9.99 14.93 9.99 15.23C9.99 15.43 10.14 15.68 10.54 15.6C13.71 14.53 16 11.54 16 8C16 3.58 12.42 0 8 0Z"/>
+</svg>
+
 GitHub
 </a>
 </p>
