@@ -554,34 +554,39 @@ with col_btn:
 # Prediction
 # -----------------------------------
 if run:
-    total_income = applicant_income + coapplicant_income
-    emi = calculate_emi(loan_amount, loan_term)
-    emi_ratio = emi / total_income if total_income > 0 else 0
+    import time
 
-    # Summary expander
-    with st.expander("📋 Application Summary"):
-        s1, s2, s3 = st.columns(3)
-        s1.metric("Total Household Income", f"₹{total_income:,}")
-        s2.metric("Loan Amount Requested", f"₹{loan_amount:,}")
-        s3.metric("Credit Score", credit_score)
+    with st.spinner("🧠 Running AI risk analysis... Please wait"):
+        time.sleep(1.2)
 
-    # Prepare & predict
-    input_data = pd.DataFrame([[
-        applicant_income, coapplicant_income, loan_amount, credit_score,
-        age, dependents, existing_loans, savings, collateral_value,
-        loan_term, employment_status, property_area, loan_purpose,
-        education_level, gender, employer_category
-    ]], columns=[
-        'Applicant_Income','Coapplicant_Income','Loan_Amount','Credit_Score',
-        'Age','Dependents','Existing_Loans','Savings','Collateral_Value',
-        'Loan_Term','Employment_Status','Property_Area','Loan_Purpose',
-        'Education_Level','Gender','Employer_Category'
-    ])
+        total_income = applicant_income + coapplicant_income
+        emi = calculate_emi(loan_amount, loan_term)
+        emi_ratio = emi / total_income if total_income > 0 else 0
 
-    scaled_data  = scaler.transform(input_data)
-    prediction   = model.predict(scaled_data)
-    probability  = model.predict_proba(scaled_data)
-    approval_prob = probability[0][1] * 100
+        # Summary expander
+        with st.expander("📋 Application Summary"):
+            s1, s2, s3 = st.columns(3)
+            s1.metric("Total Household Income", f"₹{total_income:,}")
+            s2.metric("Loan Amount Requested", f"₹{loan_amount:,}")
+            s3.metric("Credit Score", credit_score)
+
+        # Prepare & predict
+        input_data = pd.DataFrame([[
+            applicant_income, coapplicant_income, loan_amount, credit_score,
+            age, dependents, existing_loans, savings, collateral_value,
+            loan_term, employment_status, property_area, loan_purpose,
+            education_level, gender, employer_category
+        ]], columns=[
+            'Applicant_Income','Coapplicant_Income','Loan_Amount','Credit_Score',
+            'Age','Dependents','Existing_Loans','Savings','Collateral_Value',
+            'Loan_Term','Employment_Status','Property_Area','Loan_Purpose',
+            'Education_Level','Gender','Employer_Category'
+        ])
+
+        scaled_data  = scaler.transform(input_data)
+        prediction   = model.predict(scaled_data)
+        probability  = model.predict_proba(scaled_data)
+        approval_prob = probability[0][1] * 100
 
     # ── Divider ──
     st.markdown("---")
