@@ -420,7 +420,7 @@ st.markdown("""
     </div>
     <div class="hero-stats">
         <div>
-            <div class="hero-stat-val">98.4%</div>
+            <div class="hero-stat-val">83.4%</div>
             <div class="hero-stat-label">Accuracy</div>
         </div>
         <div>
@@ -463,7 +463,7 @@ st.sidebar.markdown("""
     font-size:14px;
     line-height:1.6;
 ">
-💡 AI-powered system that evaluates loan applications using:<br>
+AI-powered system that evaluates loan applications using:<br>
 • Financial indicators<br>
 • Credit score analysis<br>
 • Multi-factor risk assessment
@@ -478,7 +478,7 @@ st.sidebar.markdown("""
 System Stats
 </div>
 <div style="font-size:14px; color:#F0EBE0; line-height:1.8;">
-✔ Accuracy: <span style="color:#C9A84C;">98.4%</span><br>
+✔ Accuracy: <span style="color:#C9A84C;">83.4%</span><br>
 ✔ Decision Time: <span style="color:#C9A84C;">&lt; 2s</span><br>
 ✔ Risk Factors: <span style="color:#C9A84C;">16+</span>
 </div>
