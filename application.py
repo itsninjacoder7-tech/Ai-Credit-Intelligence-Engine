@@ -499,19 +499,6 @@ Arnav Singh
 <div style="font-size:13px; color:#9A9080; margin-top:4px;">
 Machine Learning Enthusiast | Aspiring Data Scientist
 </div>
-
-<div style="
-    margin-top:10px;
-    padding:6px 10px;
-    border-radius:8px;
-    background: rgba(0,255,150,0.08);
-    border:1px solid rgba(0,255,150,0.2);
-    display:inline-block;
-    font-size:13px;
-    color:#7CFFB2;
-">
-📧 itsarnav.singh80@gmail.com
-</div>
 """, unsafe_allow_html=True)
 
 # Clean Links (Same Font – No Buttons ❌)
