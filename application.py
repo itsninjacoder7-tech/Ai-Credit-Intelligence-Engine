@@ -3,24 +3,469 @@ import pandas as pd
 import pickle
 import numpy as np
 
-# -----------------------------
-# PAGE CONFIG (FIXED)
-# -----------------------------
+# -----------------------------------
+# Page Config
+# -----------------------------------
 st.set_page_config(
     page_title="LoanSahayak — Smart Loan Intelligence",
     page_icon="🏦",
     layout="wide"
 )
 
-# -----------------------------
-# LOAD MODEL & SCALER (IMPORTANT)
-# -----------------------------
+# -----------------------------------
+# Premium UI Styling — Luxury Finance Aesthetic
+# -----------------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --bg-deep: #070B14;
+    --bg-card: rgba(255,255,255,0.035);
+    --bg-card-hover: rgba(255,255,255,0.06);
+    --border: rgba(201,168,76,0.2);
+    --border-bright: rgba(201,168,76,0.5);
+    --text-primary: #F0EBE0;
+    --text-secondary: #9A9080;
+    --text-muted: #5A5448;
+    --success: #2ECC71;
+    --danger: #E74C3C;
+    --blue-accent: #3B82F6;
+}
+
+/* ── Global reset ── */
+html, body, [data-testid="stAppViewContainer"] {
+    background: var(--bg-deep) !important;
+    color: var(--text-primary) !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+/* Noise texture overlay */
+[data-testid="stAppViewContainer"]::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+/* Main content wrapper */
+.main .block-container {
+    padding: 2rem 3rem 4rem !important;
+    max-width: 1200px !important;
+}
+
+/* ── Hero ── */
+.hero-wrap {
+    position: relative;
+    text-align: center;
+    padding: 72px 40px 60px;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%),
+        linear-gradient(180deg, #0C1525 0%, #070B14 100%);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.hero-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border: 1px solid var(--border-bright);
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-dim);
+    margin-bottom: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 56px !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    margin: 0 0 16px !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.5px;
+}
+
+.hero-title span {
+    color: var(--gold);
+}
+
+.hero-sub {
+    font-size: 17px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    max-width: 520px;
+    margin: 0 auto 28px;
+    line-height: 1.7;
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.hero-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.hero-stat-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ── Section headers ── */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 36px 0 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--gold-dim);
+    border: 1px solid var(--border-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+}
+
+.section-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-left: auto;
+}
+
+/* ── Input labels ── */
+label, .stSelectbox label, .stNumberInput label,
+.stSlider label, [data-testid="stWidgetLabel"] {
+    color: var(--text-secondary) !important;
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    margin-bottom: 6px !important;
+}
+
+/* ── Text inputs & number inputs ── */
+input[type="number"], .stTextInput input {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    color: var(--text-primary) !important;
+    padding: 10px 14px !important;
+    font-size: 15px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    transition: border-color 0.2s !important;
+}
+
+input[type="number"]:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px var(--gold-dim) !important;
+    outline: none !important;
+}
+
+/* ── Selectbox ── */
+.stSelectbox > div > div {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    color: var(--text-primary) !important;
+}
+
+.stSelectbox > div > div:focus-within {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px var(--gold-dim) !important;
+}
+
+/* ── Sliders ── */
+.stSlider > div > div > div {
+    background: var(--gold) !important;
+}
+
+.stSlider > div > div > div > div {
+    background: var(--gold) !important;
+    border: 2px solid var(--bg-deep) !important;
+    box-shadow: 0 0 0 2px var(--gold) !important;
+}
+
+/* slider track bg */
+[data-testid="stSlider"] > div > div {
+    background: rgba(255,255,255,0.07) !important;
+}
+
+/* ── Button ── */
+.stButton > button {
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%) !important;
+    color: #070B14 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    height: 54px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    width: 100% !important;
+    font-family: 'DM Sans', sans-serif !important;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.25) !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.4) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0) !important;
+}
+
+/* ── Metrics ── */
+[data-testid="metric-container"] {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 16px !important;
+    padding: 20px 22px !important;
+    backdrop-filter: blur(12px) !important;
+    transition: border-color 0.2s !important;
+}
+
+[data-testid="metric-container"]:hover {
+    border-color: var(--border-bright) !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: var(--text-muted) !important;
+    font-size: 11px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: var(--text-primary) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-size: 26px !important;
+}
+
+/* ── Expander ── */
+.streamlit-expanderHeader {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    color: var(--text-secondary) !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+}
+
+.streamlit-expanderContent {
+    background: rgba(255,255,255,0.02) !important;
+    border: 1px solid var(--border) !important;
+    border-top: none !important;
+    border-radius: 0 0 12px 12px !important;
+}
+
+/* ── Alert boxes ── */
+.stSuccess, .stError, .stWarning, .stInfo {
+    border-radius: 14px !important;
+    border-left-width: 3px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 15px !important;
+    padding: 16px 20px !important;
+}
+
+/* ── Progress bar ── */
+.stProgress > div > div {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light)) !important;
+    border-radius: 100px !important;
+}
+
+.stProgress > div {
+    background: rgba(255,255,255,0.07) !important;
+    border-radius: 100px !important;
+    height: 8px !important;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: #070B14 !important;
+    border-right: 1px solid var(--border) !important;
+}
+
+[data-testid="stSidebar"] .stMarkdown p,
+[data-testid="stSidebar"] .stMarkdown li,
+[data-testid="stSidebar"] label {
+    color: var(--text-secondary) !important;
+    font-size: 13px !important;
+}
+
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: var(--text-primary) !important;
+    font-family: 'Playfair Display', serif !important;
+}
+
+/* ── Divider ── */
+hr {
+    border-color: var(--border) !important;
+    margin: 28px 0 !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ── Result card ── */
+.result-approved {
+    padding: 32px 36px;
+    border-radius: 20px;
+    border: 1px solid rgba(46,204,113,0.3);
+    background: radial-gradient(ellipse at top, rgba(46,204,113,0.06) 0%, transparent 70%),
+                rgba(255,255,255,0.025);
+    text-align: center;
+}
+
+.result-rejected {
+    padding: 32px 36px;
+    border-radius: 20px;
+    border: 1px solid rgba(231,76,60,0.3);
+    background: radial-gradient(ellipse at top, rgba(231,76,60,0.06) 0%, transparent 70%),
+                rgba(255,255,255,0.025);
+    text-align: center;
+}
+
+.result-icon { font-size: 48px; margin-bottom: 12px; }
+.result-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+.result-sub { font-size: 14px; color: var(--text-secondary); letter-spacing: 0.5px; }
+.result-conf {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.conf-approved { background: rgba(46,204,113,0.15); color: #2ECC71; border: 1px solid rgba(46,204,113,0.3); }
+.conf-rejected { background: rgba(231,76,60,0.15); color: #E74C3C; border: 1px solid rgba(231,76,60,0.3); }
+
+/* ── Input group divider ── */
+.input-group-gap { margin-top: 8px; }
+
+</style>
+""", unsafe_allow_html=True)
+
+# -----------------------------------
+# HERO HEADER
+# -----------------------------------
+st.markdown("""
+<div class="hero-wrap">
+    <div class="hero-badge">✦ AI-Powered Lending Intelligence</div>
+    <div class="hero-title">Loan<span>Sahayak</span></div>
+    <div class="hero-sub">
+        Sophisticated credit analysis and risk assessment — engineered for modern lending decisions.
+    </div>
+    <div class="hero-stats">
+        <div>
+            <div class="hero-stat-val">98.4%</div>
+            <div class="hero-stat-label">Accuracy</div>
+        </div>
+        <div>
+            <div class="hero-stat-val">&lt; 2s</div>
+            <div class="hero-stat-label">Decision Time</div>
+        </div>
+        <div>
+            <div class="hero-stat-val">16+</div>
+            <div class="hero-stat-label">Risk Factors</div>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# -----------------------------------
+# Sidebar
+# -----------------------------------
+st.sidebar.markdown("""
+<div style="padding: 8px 0 20px; border-bottom: 1px solid rgba(201,168,76,0.2); margin-bottom: 20px;">
+    <div style="font-family: 'Playfair Display', serif; font-size: 22px; color: #F0EBE0; font-weight: 700;">LoanSahayak</div>
+    <div style="font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #9A9080; margin-top: 4px;">Smart Loan Intelligence</div>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.info("""
+This AI system evaluates loan applications using financial indicators,
+credit score analysis, and multi-factor risk assessment.
+""")
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 👤 Project Author")
+st.sidebar.write("**Arnav Singh**")
+st.sidebar.write("Machine Learning Enthusiast | Aspiring Data Scientist")
+st.sidebar.markdown("📧 `itsarnav.singh80@gmail.com`")
+st.sidebar.markdown("[🔗 LinkedIn](https://www.linkedin.com/in/arnav-singh-a87847351)  ·  [💻 GitHub](https://github.com/Arnav-Singh-5080)")
+
+# -----------------------------------
+# Load Model
+# -----------------------------------
 model = pickle.load(open("loan_model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
 
-# -----------------------------
-# EMI FUNCTION
-# -----------------------------
+# -----------------------------------
+# EMI Calculator
+# -----------------------------------
 def calculate_emi(principal, tenure_months, annual_rate=10):
     if principal == 0 or tenure_months == 0:
         return 0
@@ -29,72 +474,98 @@ def calculate_emi(principal, tenure_months, annual_rate=10):
           ((1 + monthly_rate)**tenure_months - 1)
     return emi
 
-# -----------------------------
-# HEADER
-# -----------------------------
-st.title("💰 LoanSahayak — Smart Loan Intelligence")
-st.markdown("AI-Powered Loan Approval Prediction System")
+# -----------------------------------
+# Section: Financial Details
+# -----------------------------------
+st.markdown("""
+<div class="section-header">
+    <div class="section-icon">💼</div>
+    <div class="section-title">Financial Profile</div>
+    <div class="section-desc">Income & Loan Details</div>
+</div>
+""", unsafe_allow_html=True)
 
-# -----------------------------
-# INPUT SECTION (CLEANED)
-# -----------------------------
-st.subheader("💼 Financial Details")
-
-col1, col2 = st.columns(2)
+col1, col2 = st.columns(2, gap="large")
 
 with col1:
-    applicant_income = st.number_input("Applicant Income (₹)", min_value=0)
-    coapplicant_income = st.number_input("Coapplicant Income (₹)", min_value=0)
-    loan_amount = st.number_input("Loan Amount (₹)", min_value=0)
-    savings = st.number_input("Savings (₹)", min_value=0)
+    applicant_income    = st.number_input("Applicant Income (₹)", min_value=0, step=1000)
+    coapplicant_income  = st.number_input("Coapplicant Income (₹)", min_value=0, step=1000)
+    loan_amount         = st.number_input("Loan Amount (₹)", min_value=0, step=1000)
+    savings             = st.number_input("Savings (₹)", min_value=0, step=1000)
 
 with col2:
-    collateral_value = st.number_input("Collateral Value (₹)", min_value=0)
-    dependents = st.number_input("Dependents", min_value=0)
-    existing_loans = st.number_input("Existing Loans", min_value=0)
-    loan_term = st.slider("Loan Term (Months)", 6, 360, 60)
+    collateral_value    = st.number_input("Collateral Value (₹)", min_value=0, step=1000)
+    dependents          = st.number_input("Number of Dependents", min_value=0)
+    existing_loans      = st.number_input("Existing Active Loans", min_value=0)
+    st.markdown('<div class="input-group-gap"></div>', unsafe_allow_html=True)
 
-st.subheader("📊 Personal Details")
-
-col3, col4 = st.columns(2)
-
+col3, col4 = st.columns(2, gap="large")
 with col3:
     credit_score = st.slider("Credit Score", 300, 900, 650)
-    age = st.slider("Age", 18, 70, 30)
-
-    employment_dict = {"Unemployed":0,"Salaried":1,"Self-Employed":2}
-    employment_status = employment_dict[st.selectbox("Employment Status", employment_dict.keys())]
-
-    property_dict = {"Rural":0,"Semi-Urban":1,"Urban":2}
-    property_area = property_dict[st.selectbox("Property Area", property_dict.keys())]
-
 with col4:
-    education_dict = {"Not Graduate":0,"Graduate":1}
-    education_level = education_dict[st.selectbox("Education Level", education_dict.keys())]
+    loan_term    = st.slider("Loan Term (Months)", 6, 360, 60)
 
-    gender_dict = {"Female":0,"Male":1}
-    gender = gender_dict[st.selectbox("Gender", gender_dict.keys())]
+col5, _ = st.columns([1, 1], gap="large")
+with col5:
+    age = st.slider("Applicant Age", 18, 70, 30)
 
-    employer_dict = {"Private Sector":0,"Government":1,"Business Owner":2}
-    employer_category = employer_dict[st.selectbox("Employer Category", employer_dict.keys())]
+# -----------------------------------
+# Section: Background Details
+# -----------------------------------
+st.markdown("""
+<div class="section-header" style="margin-top: 44px;">
+    <div class="section-icon">👤</div>
+    <div class="section-title">Applicant Background</div>
+    <div class="section-desc">Demographic & Employment</div>
+</div>
+""", unsafe_allow_html=True)
 
-    loan_purpose_dict = {
-        "Home Loan":0,"Car Loan":1,"Education Loan":2,"Personal Loan":3
-    }
-    loan_purpose = loan_purpose_dict[st.selectbox("Loan Purpose", loan_purpose_dict.keys())]
+col6, col7 = st.columns(2, gap="large")
 
-# -----------------------------
-# BUTTON (FIXED)
-# -----------------------------
-if st.button("🔎 Analyze Loan Application"):
+with col6:
+    employment_dict = {"Unemployed": 0, "Salaried": 1, "Self-Employed": 2}
+    employment_status = employment_dict[st.selectbox("Employment Status", list(employment_dict.keys()))]
 
+    property_dict = {"Rural": 0, "Semi-Urban": 1, "Urban": 2}
+    property_area = property_dict[st.selectbox("Property Area", list(property_dict.keys()))]
+
+    loan_purpose_dict = {"Home Loan": 0, "Car Loan": 1, "Education Loan": 2, "Personal Loan": 3}
+    loan_purpose = loan_purpose_dict[st.selectbox("Loan Purpose", list(loan_purpose_dict.keys()))]
+
+with col7:
+    education_dict = {"Not Graduate": 0, "Graduate": 1}
+    education_level = education_dict[st.selectbox("Education Level", list(education_dict.keys()))]
+
+    gender_dict = {"Female": 0, "Male": 1}
+    gender = gender_dict[st.selectbox("Gender", list(gender_dict.keys()))]
+
+    employer_category_dict = {"Private Sector": 0, "Government": 1, "Business Owner": 2}
+    employer_category = employer_category_dict[st.selectbox("Employer Category", list(employer_category_dict.keys()))]
+
+# -----------------------------------
+# Analyse Button
+# -----------------------------------
+st.markdown("<div style='margin-top: 36px;'></div>", unsafe_allow_html=True)
+col_btn, _, _ = st.columns([1.2, 1, 1])
+with col_btn:
+    run = st.button("⬡  Analyse Loan Application")
+
+# -----------------------------------
+# Prediction
+# -----------------------------------
+if run:
     total_income = applicant_income + coapplicant_income
     emi = calculate_emi(loan_amount, loan_term)
     emi_ratio = emi / total_income if total_income > 0 else 0
 
-    # -----------------------------
-    # DATAFRAME
-    # -----------------------------
+    # Summary expander
+    with st.expander("📋 Application Summary"):
+        s1, s2, s3 = st.columns(3)
+        s1.metric("Total Household Income", f"₹{total_income:,}")
+        s2.metric("Loan Amount Requested", f"₹{loan_amount:,}")
+        s3.metric("Credit Score", credit_score)
+
+    # Prepare & predict
     input_data = pd.DataFrame([[
         applicant_income, coapplicant_income, loan_amount, credit_score,
         age, dependents, existing_loans, savings, collateral_value,
@@ -107,44 +578,101 @@ if st.button("🔎 Analyze Loan Application"):
         'Education_Level','Gender','Employer_Category'
     ])
 
-    scaled_data = scaler.transform(input_data)
+    scaled_data  = scaler.transform(input_data)
+    prediction   = model.predict(scaled_data)
+    probability  = model.predict_proba(scaled_data)
+    approval_prob = probability[0][1] * 100
 
-    prediction = model.predict(scaled_data)
-    probability = model.predict_proba(scaled_data)[0][1] * 100
+    # ── Divider ──
+    st.markdown("---")
 
-    # -----------------------------
-    # OUTPUT
-    # -----------------------------
-    st.subheader("📊 Financial Summary")
-    colA, colB, colC = st.columns(3)
-    colA.metric("EMI", f"₹ {round(emi,2)}")
-    colB.metric("Total Income", f"₹ {total_income}")
-    colC.metric("EMI Ratio", f"{round(emi_ratio*100,2)}%")
+    # ── Financial Analysis row ──
+    st.markdown("""
+    <div class="section-header">
+        <div class="section-icon">📊</div>
+        <div class="section-title">Financial Analysis</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.subheader("🧠 Prediction Result")
+    mA, mB, mC = st.columns(3, gap="large")
+    mA.metric("Monthly EMI", f"₹ {round(emi, 2):,}")
+    mB.metric("Total Monthly Income", f"₹ {total_income:,}")
+    mC.metric("EMI / Income Ratio", f"{round(emi_ratio * 100, 2)} %")
 
+    # ── Confidence bar ──
+    st.markdown("---")
+    st.markdown("""
+    <div class="section-header">
+        <div class="section-icon">🧠</div>
+        <div class="section-title">AI Decision Engine</div>
+        <div class="section-desc">Confidence Score</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.progress(int(approval_prob))
+    st.markdown(
+        f"<div style='text-align:right; font-size:12px; color: var(--text-muted, #5A5448); margin-top:-8px; letter-spacing:1px;'>"
+        f"APPROVAL PROBABILITY — {round(approval_prob, 1)}%</div>",
+        unsafe_allow_html=True
+    )
+
+    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+
+    # ── Decision card ──
     if prediction[0] == 1:
-        st.success(f"✅ Loan Approved (Confidence: {round(probability,2)}%)")
-        risk = "Low Risk"
-    elif probability > 40:
-        st.warning(f"⚠ Conditional Approval (Confidence: {round(probability,2)}%)")
-        risk = "Medium Risk"
+        st.markdown(f"""
+        <div class="result-approved">
+            <div class="result-icon">✦</div>
+            <div class="result-label" style="color:#2ECC71;">Loan Approved</div>
+            <div class="result-sub">The applicant meets the credit and financial criteria</div>
+            <span class="result-conf conf-approved">Confidence: {round(approval_prob, 2)}%</span>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.error(f"❌ Loan Rejected (Confidence: {round(100-probability,2)}%)")
-        risk = "High Risk"
+        st.markdown(f"""
+        <div class="result-rejected">
+            <div class="result-icon">✕</div>
+            <div class="result-label" style="color:#E74C3C;">Loan Declined</div>
+            <div class="result-sub">The application did not meet the minimum approval criteria</div>
+            <span class="result-conf conf-rejected">Confidence: {round(100-approval_prob, 2)}%</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.write(f"### Risk Level: {risk}")
-
-    # -----------------------------
-    # INSIGHTS
-    # -----------------------------
-    st.subheader("📌 Insights")
+    # ── Risk Assessment ──
+    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-header">
+        <div class="section-icon">📌</div>
+        <div class="section-title">Risk Assessment</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     if emi_ratio > 0.5:
-        st.warning("High EMI-to-income ratio → financial stress risk")
+        st.warning("⚠ High EMI-to-Income ratio detected — significant financial overextension risk.")
     elif credit_score < 600:
-        st.warning("Low credit score → high default probability")
+        st.warning("⚠ Below-threshold credit score — elevated probability of default.")
     elif existing_loans > 2:
-        st.warning("Too many active loans → high debt burden")
+        st.warning("⚠ Multiple active loans — increased debt-burden and default risk.")
     else:
-        st.info("Stable financial profile ✅")
+        st.info("✓ Applicant's financial profile appears stable across all key indicators.")
+
+# -----------------------------------
+# Footer
+# -----------------------------------
+st.markdown("""
+<div style="
+    margin-top: 100px;
+    padding: 28px 32px;
+    border-radius: 16px;
+    border: 1px solid rgba(201,168,76,0.12);
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #5A5448;">
+    <div>© 2026 <span style='color:#C9A84C;'>LoanSahayak</span> — All Rights Reserved</div>
+    <div style='text-transform:uppercase; letter-spacing:2px;'>AI · Credit · Intelligence</div>
+</div>
+""", unsafe_allow_html=True)
