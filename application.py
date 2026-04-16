@@ -15,7 +15,7 @@ st.set_page_config(
 # -----------------------------
 # LOAD MODEL & SCALER (IMPORTANT)
 # -----------------------------
-model = pickle.load(open("model.pkl", "rb"))
+model = pickle.load(open("loan_model.pkl", "rb"))
 scaler = pickle.load(open("scaler.pkl", "rb"))
 
 # -----------------------------
