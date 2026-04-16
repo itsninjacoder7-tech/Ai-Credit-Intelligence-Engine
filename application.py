@@ -765,9 +765,9 @@ if run:
     decision_text = "APPROVED" if prediction[0] == 1 else "REJECTED"
 
     if prediction[0] == 1:
-        st.success(f"✅ Loan Approved (Confidence: {round(approval_prob,2)}%)")
+        st.success(f"✓ Loan Approved (Confidence: {round(approval_prob,2)}%)")
     else:
-        st.error(f"❌ Loan Rejected (Confidence: {round(100-approval_prob,2)}%)")
+        st.error(f"✕ Loan Rejected (Confidence: {round(100-approval_prob,2)}%)")
 
     # Risk
     if emi_ratio > 0.5:
