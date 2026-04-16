@@ -550,16 +550,14 @@ col_btn, _, _ = st.columns([1.2, 1, 1])
 with col_btn:
     run = st.button("⬡  Analyse Loan Application")
 
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # -----------------------------------
 # Prediction
 # -----------------------------------
 if run:
-    import time
-
     progress_bar = st.progress(0)
     status_text = st.empty()
 
-    # Fake AI processing steps (premium feel)
     steps = [
         "🔍 Collecting financial data...",
         "📊 Analyzing income & liabilities...",
@@ -581,14 +579,12 @@ if run:
     emi = calculate_emi(loan_amount, loan_term)
     emi_ratio = emi / total_income if total_income > 0 else 0
 
-    # Summary expander
     with st.expander("📋 Application Summary"):
         s1, s2, s3 = st.columns(3)
         s1.metric("Total Household Income", f"₹{total_income:,}")
         s2.metric("Loan Amount Requested", f"₹{loan_amount:,}")
         s3.metric("Credit Score", credit_score)
 
-    # Prepare & predict
     input_data = pd.DataFrame([[
         applicant_income, coapplicant_income, loan_amount, credit_score,
         age, dependents, existing_loans, savings, collateral_value,
@@ -601,87 +597,40 @@ if run:
         'Education_Level','Gender','Employer_Category'
     ])
 
-    scaled_data  = scaler.transform(input_data)
-    prediction   = model.predict(scaled_data)
-    probability  = model.predict_proba(scaled_data)
+    scaled_data = scaler.transform(input_data)
+    prediction = model.predict(scaled_data)
+    probability = model.predict_proba(scaled_data)
     approval_prob = probability[0][1] * 100
 
-    # ── Divider ──
     st.markdown("---")
 
-    # ── Financial Analysis row ──
-    st.markdown("""
-    <div class="section-header">
-        <div class="section-icon">📊</div>
-        <div class="section-title">Financial Analysis</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    mA, mB, mC = st.columns(3, gap="large")
-    mA.metric("Monthly EMI", f"₹ {round(emi, 2):,}")
-    mB.metric("Total Monthly Income", f"₹ {total_income:,}")
-    mC.metric("EMI / Income Ratio", f"{round(emi_ratio * 100, 2)} %")
-
-    # ── Confidence bar ──
-    st.markdown("---")
-    st.markdown("""
-    <div class="section-header">
-        <div class="section-icon">🧠</div>
-        <div class="section-title">AI Decision Engine</div>
-        <div class="section-desc">Confidence Score</div>
-    </div>
-    """, unsafe_allow_html=True)
+    m1, m2, m3 = st.columns(3)
+    m1.metric("Monthly EMI", f"₹ {round(emi, 2):,}")
+    m2.metric("Total Monthly Income", f"₹ {total_income:,}")
+    m3.metric("EMI Ratio", f"{round(emi_ratio*100,2)}%")
 
     st.progress(int(approval_prob))
-    st.markdown(
-        f"<div style='text-align:right; font-size:12px; color: var(--text-muted, #5A5448); margin-top:-8px; letter-spacing:1px;'>"
-        f"APPROVAL PROBABILITY — {round(approval_prob, 1)}%</div>",
-        unsafe_allow_html=True
-    )
+    st.write(f"Approval Probability: {round(approval_prob,1)}%")
 
-    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
-
-    # ── Decision card ──
     if prediction[0] == 1:
-        st.markdown(f"""
-        <div class="result-approved">
-            <div class="result-icon">✦</div>
-            <div class="result-label" style="color:#2ECC71;">Loan Approved</div>
-            <div class="result-sub">The applicant meets the credit and financial criteria</div>
-            <span class="result-conf conf-approved">Confidence: {round(approval_prob, 2)}%</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.success(f"✅ Loan Approved ({round(approval_prob,2)}%)")
     else:
-        st.markdown(f"""
-        <div class="result-rejected">
-            <div class="result-icon">✕</div>
-            <div class="result-label" style="color:#E74C3C;">Loan Declined</div>
-            <div class="result-sub">The application did not meet the minimum approval criteria</div>
-            <span class="result-conf conf-rejected">Confidence: {round(100-approval_prob, 2)}%</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.error(f"❌ Loan Rejected ({round(100-approval_prob,2)}%)")
 
-    # ── Risk Assessment ──
-    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="section-header">
-        <div class="section-icon">📌</div>
-        <div class="section-title">Risk Assessment</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    # Risk
     if emi_ratio > 0.5:
-        st.warning("⚠ High EMI-to-Income ratio detected — significant financial overextension risk.")
+        st.warning("High EMI ratio")
     elif credit_score < 600:
-        st.warning("⚠ Below-threshold credit score — elevated probability of default.")
+        st.warning("Low credit score")
     elif existing_loans > 2:
-        st.warning("⚠ Multiple active loans — increased debt-burden and default risk.")
+        st.warning("Too many loans")
     else:
-        st.info("✓ Applicant's financial profile appears stable across all key indicators.")
+        st.info("Stable profile")
 
-# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# ── Download Report ──
-report = f"""
+    # -----------------------------------
+    # ✅ Download Report (FIXED)
+    # -----------------------------------
+    report = f"""
 LOAN ANALYSIS REPORT
 ------------------------------
 Applicant Income: ₹{applicant_income}
@@ -704,14 +653,13 @@ CONFIDENCE: {round(approval_prob, 2)}%
 Generated by LoanSahayak AI
 """
 
-st.markdown("<div style='margin-top:20px;'></div>", unsafe_allow_html=True)
+    st.download_button(
+        label="📄 Download Loan Report",
+        data=report,
+        file_name="LoanSahayak_Report.txt",
+        mime="text/plain"
+    )
 
-st.download_button(
-    label="📄 Download Loan Report",
-    data=report,
-    file_name="LoanSahayak_Report.txt",
-    mime="text/plain"
-)
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # -----------------------------------
