@@ -682,14 +682,16 @@ with col_btn:
 # -----------------------------------
 if run:
     import time
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.pagesizes import A4
+    from reportlab.lib.enums import TA_CENTER
 
     progress_bar = st.progress(0)
     status_text = st.empty()
 
-    # Fake AI processing steps
+    # AI processing animation
     steps = [
         "🔍 Collecting financial data...",
         "📊 Analyzing income & liabilities...",
@@ -718,7 +720,7 @@ if run:
         s2.metric("Loan Amount Requested", f"₹{loan_amount:,}")
         s3.metric("Credit Score", credit_score)
 
-    # Prepare & predict
+    # Prediction
     input_data = pd.DataFrame([[
         applicant_income, coapplicant_income, loan_amount, credit_score,
         age, dependents, existing_loans, savings, collateral_value,
@@ -736,10 +738,10 @@ if run:
     probability  = model.predict_proba(scaled_data)
     approval_prob = probability[0][1] * 100
 
-    # ── Divider ──
+    # Divider
     st.markdown("---")
 
-    # ── Financial Analysis ──
+    # Financial Analysis
     st.markdown("""
     <div class="section-header">
         <div class="section-icon">📊</div>
@@ -747,99 +749,121 @@ if run:
     </div>
     """, unsafe_allow_html=True)
 
-    mA, mB, mC = st.columns(3, gap="large")
+    mA, mB, mC = st.columns(3)
     mA.metric("Monthly EMI", f"₹ {round(emi, 2):,}")
     mB.metric("Total Monthly Income", f"₹ {total_income:,}")
     mC.metric("EMI / Income Ratio", f"{round(emi_ratio * 100, 2)} %")
 
-    # ── AI Confidence ──
+    # AI Confidence
     st.markdown("---")
-    st.markdown("""
-    <div class="section-header">
-        <div class="section-icon">🧠</div>
-        <div class="section-title">AI Decision Engine</div>
-        <div class="section-desc">Confidence Score</div>
-    </div>
-    """, unsafe_allow_html=True)
-
     st.progress(int(approval_prob))
-    st.markdown(
-        f"<div style='text-align:right; font-size:12px; color:#5A5448;'>"
-        f"APPROVAL PROBABILITY — {round(approval_prob, 1)}%</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown(f"**Approval Probability: {round(approval_prob,1)}%**")
 
-    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    # ── Decision ──
+    # Decision UI
+    decision_text = "APPROVED" if prediction[0] == 1 else "REJECTED"
+
     if prediction[0] == 1:
-        st.markdown(f"""
-        <div class="result-approved">
-            <div class="result-icon">✦</div>
-            <div class="result-label" style="color:#2ECC71;">Loan Approved</div>
-            <div class="result-sub">The applicant meets the criteria</div>
-            <span class="result-conf conf-approved">Confidence: {round(approval_prob, 2)}%</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.success(f"✅ Loan Approved (Confidence: {round(approval_prob,2)}%)")
     else:
-        st.markdown(f"""
-        <div class="result-rejected">
-            <div class="result-icon">✕</div>
-            <div class="result-label" style="color:#E74C3C;">Loan Declined</div>
-            <div class="result-sub">Application did not meet criteria</div>
-            <span class="result-conf conf-rejected">Confidence: {round(100-approval_prob, 2)}%</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.error(f"❌ Loan Rejected (Confidence: {round(100-approval_prob,2)}%)")
 
-    # ── Risk Assessment ──
-    st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
-    st.markdown("""
-    <div class="section-header">
-        <div class="section-icon">📌</div>
-        <div class="section-title">Risk Assessment</div>
-    </div>
-    """, unsafe_allow_html=True)
-
+    # Risk
     if emi_ratio > 0.5:
-        st.warning("⚠ High EMI-to-Income ratio detected.")
+        st.warning("⚠ High EMI ratio")
     elif credit_score < 600:
-        st.warning("⚠ Low credit score — high risk.")
-    elif existing_loans > 2:
-        st.warning("⚠ Multiple loans — debt risk.")
+        st.warning("⚠ Low credit score")
     else:
-        st.info("✓ Financial profile looks stable.")
+        st.info("✓ Stable profile")
 
-    # ── PDF Report ──
+    # -----------------------------------
+    # PREMIUM PDF REPORT
+    # -----------------------------------
     pdf_path = "loan_report.pdf"
     doc = SimpleDocTemplate(pdf_path, pagesize=A4)
     styles = getSampleStyleSheet()
 
-    content = []
-    content.append(Paragraph("<b>LoanSahayak — Loan Analysis Report</b>", styles["Title"]))
-    content.append(Spacer(1, 12))
+    title_style = ParagraphStyle(
+        name='Title',
+        parent=styles['Title'],
+        alignment=TA_CENTER,
+        textColor=colors.HexColor("#C9A84C")
+    )
 
-    content.append(Paragraph(f"<b>Total Income:</b> ₹{total_income}", styles["Normal"]))
-    content.append(Paragraph(f"<b>Loan Amount:</b> ₹{loan_amount}", styles["Normal"]))
-    content.append(Paragraph(f"<b>EMI:</b> ₹{round(emi,2)}", styles["Normal"]))
+    section_style = ParagraphStyle(
+        name='Heading',
+        parent=styles['Heading2'],
+        textColor=colors.HexColor("#3B82F6")
+    )
+
+    content = []
+
+    # Header
+    content.append(Paragraph("LoanSahayak", title_style))
+    content.append(Spacer(1, 6))
+    content.append(Paragraph("AI Loan Analysis Report", styles["Italic"]))
+    content.append(Spacer(1, 20))
+
+    # Financial Table
+    content.append(Paragraph("Financial Summary", section_style))
     content.append(Spacer(1, 10))
 
-    content.append(Paragraph(f"<b>Credit Score:</b> {credit_score}", styles["Normal"]))
-    content.append(Paragraph(f"<b>Dependents:</b> {dependents}", styles["Normal"]))
-    content.append(Paragraph(f"<b>Existing Loans:</b> {existing_loans}", styles["Normal"]))
-    content.append(Spacer(1, 12))
+    table = Table([
+        ["Metric", "Value"],
+        ["Total Income", f"₹ {total_income:,}"],
+        ["Loan Amount", f"₹ {loan_amount:,}"],
+        ["Loan Term", f"{loan_term} months"],
+        ["EMI", f"₹ {round(emi,2)}"]
+    ])
 
-    decision_text = "APPROVED" if prediction[0] == 1 else "REJECTED"
-    content.append(Paragraph(f"<b>Decision:</b> {decision_text}", styles["Normal"]))
-    content.append(Paragraph(f"<b>Confidence:</b> {round(approval_prob,2)}%", styles["Normal"]))
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#C9A84C")),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey)
+    ]))
+
+    content.append(table)
+    content.append(Spacer(1, 20))
+
+    # Credit Table
+    content.append(Paragraph("Credit Profile", section_style))
+    content.append(Spacer(1, 10))
+
+    table2 = Table([
+        ["Credit Score", credit_score],
+        ["Dependents", dependents],
+        ["Existing Loans", existing_loans]
+    ])
+
+    table2.setStyle(TableStyle([
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey)
+    ]))
+
+    content.append(table2)
+    content.append(Spacer(1, 20))
+
+    # Decision
+    color = colors.green if prediction[0] == 1 else colors.red
+    decision_style = ParagraphStyle(
+        name='Decision',
+        parent=styles['Heading1'],
+        alignment=TA_CENTER,
+        textColor=color
+    )
+
+    content.append(Paragraph(decision_text, decision_style))
+    content.append(Spacer(1, 10))
+    content.append(Paragraph(f"Confidence: {round(approval_prob,2)}%", styles["Normal"]))
 
     content.append(Spacer(1, 20))
     content.append(Paragraph("Generated by LoanSahayak AI", styles["Italic"]))
 
     doc.build(content)
 
+    # Download Button
     with open(pdf_path, "rb") as f:
         st.download_button(
-            label="📄 Download PDF Report",
+            label="📄 Download Premium PDF Report",
             data=f,
             file_name="LoanSahayak_Report.pdf",
             mime="application/pdf"
