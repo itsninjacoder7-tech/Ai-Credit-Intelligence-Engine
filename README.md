@@ -1,33 +1,75 @@
 # AI Credit Intelligence Engine
 
-![Demo](assets/CreditEngine.gif)
+<p align="center">
+  <img src="CreditEngine.gif" alt="Demo" width="700"/>
+</p>
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red?logo=streamlit)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Active-success)
-![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
-![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-blue)
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.9+-blue?logo=python"/>
+  <img src="https://img.shields.io/badge/Streamlit-App-red?logo=streamlit"/>
+  <img src="https://img.shields.io/badge/License-MIT-green"/>
+  <img src="https://img.shields.io/badge/Status-Active-success"/>
+  <img src="https://img.shields.io/badge/Contributions-Welcome-brightgreen"/>
+  <img src="https://img.shields.io/badge/PRs-Welcome-blue"/>
+  <img src="https://img.shields.io/badge/NSoC'26-Project%20Admin-blue"/>
+</p>
 
-Live Demo:
-https://credit-intelligence-ai.streamlit.app/
+<p align="center">
+  <a href="https://credit-intelligence-ai.streamlit.app/">Live Demo</a> •
+  <a href="#overview">Overview</a> •
+  <a href="#system-architecture">Architecture</a> •
+  <a href="#installation--setup">Setup</a> •
+  <a href="#open-source-contributions">Contributing</a>
+</p>
+
+---
+
+## Table of Contents
+
+* [Overview](#overview)
+* [Key Features](#key-features)
+* [System Architecture](#system-architecture)
+* [Tech Stack](#tech-stack)
+* [Installation & Setup](#installation--setup)
+* [Workflow](#workflow)
+* [Project Roadmap](#project-roadmap)
+* [Open Source Contributions](#open-source-contributions)
+* [Open Source Experience](#open-source-experience)
+* [License](#license)
+* [Maintainer](#maintainer)
 
 ---
 
 ## Overview
 
-AI-powered credit risk assessment system that evaluates loan applications using financial indicators and machine learning models. The platform provides real-time predictions, risk scoring, and financial analysis through an interactive interface, enabling data-driven lending decisions.
+AI Credit Intelligence Engine is a machine learning–driven system designed to evaluate loan applications and assess credit risk. The platform integrates predictive modeling with financial analysis to deliver structured decision outputs, enabling informed lending decisions.
 
 ---
 
-## Features
+## Key Features
 
-* Loan eligibility prediction
-* Risk classification (Low / Medium / High)
-* EMI and financial analysis
-* AI-based decision engine with confidence score
-* Risk assessment insights
-* Interactive user interface
+* Loan eligibility prediction based on financial indicators
+* Risk classification across multiple tiers
+* Confidence-based decision scoring
+* Financial insights derived from applicant data
+* Interactive web interface for real-time evaluation
+* Modular architecture supporting extensibility
+
+---
+
+## System Architecture
+
+```
+User Input
+   ↓
+Data Preprocessing and Feature Engineering
+   ↓
+Model Inference Layer
+   ↓
+Risk Classification and Scoring
+   ↓
+Decision Output and Insights
+```
 
 ---
 
@@ -41,7 +83,7 @@ AI-powered credit risk assessment system that evaluates loan applications using 
 
 ---
 
-## Installation
+## Installation & Setup
 
 ```bash
 git clone https://github.com/your-username/ai-credit-intelligence-engine
@@ -52,45 +94,72 @@ streamlit run application.py
 
 ---
 
-## How It Works
+## Workflow
 
-1. User inputs financial and personal details
-2. Data is processed and scaled
-3. Machine learning model predicts loan eligibility
-4. System generates:
+1. User inputs financial and personal data
+2. Input data is cleaned and normalized
+3. Model processes the input features
+4. Output is generated including:
 
-   * Decision outcome
+   * Eligibility decision
+   * Risk category
    * Confidence score
-   * Risk level
-   * Financial insights
+   * Supporting financial insights
 
 ---
 
-## Contributing
+## Project Roadmap
 
-Contributions are welcome.
+* Improve predictive accuracy using advanced models
+* Introduce ensemble learning techniques
+* Develop REST API using FastAPI
+* Enable cloud deployment and scalability
+* Enhance interface usability and performance
+* Integrate real-world financial datasets
+
+---
+
+## Open Source Contributions
+
+Contributions are encouraged from developers of all experience levels.
+
+### Contribution Areas
+
+* Machine Learning model improvements
+* Backend and API development
+* Interface and usability enhancements
+* Documentation and testing
+
+### Getting Started
 
 1. Fork the repository
-2. Create a new branch
-3. Make changes
-4. Commit and push
-5. Open a Pull Request
+2. Create a feature branch
+3. Implement your changes
+4. Commit and push updates
+5. Submit a pull request
 
-Refer to `docs/contribution.md` for detailed guidelines.
+Refer to `docs/contribution.md` for detailed contribution guidelines.
+
+---
+
+## Open Source Experience
+
+* Project Admin at NSoC'26 (Nexus Summer of Code)
+* Experience managing contributors and reviewing pull requests
+* Familiar with structured open-source workflows and collaboration
 
 ---
 
 ## License
 
-MIT License
+This project is licensed under the MIT License.
 
 ---
 
-## Author  
+## Maintainer
 
-**Arnav Singh**  
-Machine Learning Enthusiast | Aspiring Data Scientist  
+Arnav Singh
 
-- Email: itsarnav.singh80@gmail.com  
-- LinkedIn: https://www.linkedin.com/in/arnav-singh-a87847351  
-- GitHub: https://github.com/Arnav-Singh-5080  
+GitHub: https://github.com/Arnav-Singh-5080
+LinkedIn: https://www.linkedin.com/in/arnav-singh-a87847351
+Email: [itsarnav.singh80@gmail.com](mailto:itsarnav.singh80@gmail.com)
