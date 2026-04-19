@@ -685,6 +685,13 @@ with col_btn:
 # Prediction
 # -----------------------------------
 if run:
+    # -----------------------------------
+    # Input Validation
+    # -----------------------------------
+    if applicant_income == 0 or loan_amount == 0:
+        st.error("⚠ Income and Loan Amount must be greater than zero.")
+        st.stop()
+        
     import time
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
     from reportlab.lib import colors
