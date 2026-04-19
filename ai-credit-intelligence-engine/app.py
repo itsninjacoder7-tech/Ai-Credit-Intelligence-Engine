@@ -1,16 +1,5 @@
 import streamlit as st
-import pandas as pd
-import pickle
-import numpy as np
 
-# -----------------------------------
-# Page Config
-# -----------------------------------
-st.set_page_config(
-    page_title="LoanSahayak — Smart Loan Intelligence",
-    page_icon="🏦",
-    layout="wide"
-)
 
 # -----------------------------------
 # Premium UI Styling — Luxury Finance Aesthetic
