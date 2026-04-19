@@ -587,8 +587,8 @@ st.sidebar.markdown("""
 # -----------------------------------
 # Load Model
 # -----------------------------------
-model = pickle.load(open("loan_model.pkl", "rb"))
-scaler = pickle.load(open("scaler.pkl", "rb"))
+model = pickle.load(open("models/loan_model.pkl", "rb"))
+scaler = pickle.load(open("models/scaler.pkl", "rb"))
 
 # -----------------------------------
 # EMI Calculator
@@ -872,20 +872,287 @@ if run:
 # -----------------------------------
 # Footer
 # -----------------------------------
+
 st.markdown("""
-<div style="
+<style>
+.footer-container {
     margin-top: 100px;
-    padding: 28px 32px;
-    border-radius: 16px;
-    border: 1px solid rgba(201,168,76,0.12);
-    background: rgba(255,255,255,0.02);
+    padding: 48px 40px 28px;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    background:
+        radial-gradient(circle at top right, rgba(201,168,76,0.08), transparent 35%),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    backdrop-filter: blur(16px);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.footer-content {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 220px;
+}
+
+.footer-brand {
+    max-width: 300px;
+}
+
+.footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.footer-logo span {
+    color: var(--gold);
+}
+
+.footer-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 22px;
+}
+
+.footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer-badge {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--gold-light);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.footer-section h4 {
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-links a:hover {
+    color: var(--gold);
+    transform: translateX(4px);
+}
+
+.social-icons {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.social-icons a {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-secondary);
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--gold);
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.08);
+    transform: translateY(-4px);
+}
+
+.author-card {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+}
+
+.author-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    padding: 3px;
+    object-fit: cover;
+    margin-bottom: 14px;
+}
+
+.author-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.author-role {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.author-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.2);
+    color: #9CCBFF;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.footer-divider {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
+}
+
+.copyright {
+    color: var(--text-muted);
     font-size: 12px;
-    letter-spacing: 1px;
-    color: #5A5448;">
-    <div>© 2026 <span style='color:#C9A84C;'>LoanSahayak</span> — All Rights Reserved</div>
-    <div style='text-transform:uppercase; letter-spacing:2px;'>AI · Credit · Intelligence</div>
+}
+
+.copyright span {
+    color: var(--gold);
+}
+
+.footer-bottom-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.footer-bottom-links a {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: var(--gold);
+}
+</style>
+
+<div class="footer-container">
+    <div class="footer-content">
+        <div class="footer-section footer-brand">
+            <div class="footer-logo">Loan<span>Sahayak</span></div>
+            <div class="footer-description">
+                Intelligent loan analysis powered by AI, helping users make smarter borrowing and lending decisions with speed, transparency, and confidence.
+            </div>
+            <div class="footer-badges">
+                <div class="footer-badge">83.4% Accuracy</div>
+                <div class="footer-badge">AI Powered</div>
+                <div class="footer-badge">Secure Analysis</div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+            <li><a href="#home"><i class="fas fa-angle-right"></i> Home</a></li>
+            <li><a href="#about"><i class="fas fa-angle-right"></i> About</a></li>
+            <li><a href="#features"><i class="fas fa-angle-right"></i> Features</a></li>
+            <li><a href="#contact"><i class="fas fa-angle-right"></i> Contact</a></li>
+            <li><a href="#faq"><i class="fas fa-angle-right"></i> FAQ</a></li>
+            <li><a href="https://github.com/Arnav-Singh-5080/Ai-Credit-Intelligence-Engine" target="_blank"><i class="fas fa-angle-right"></i> GitHub Repository</a></li>
+        </ul>
+    </div>
+
+        <div class="footer-section">
+            <h4>Connect</h4>
+            <div class="social-icons">
+                <a href="https://github.com/Arnav-Singh-5080" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/arnav-singh-a87847351" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="mailto:itsarnav.singh80@gmail.com"><i class="fas fa-envelope"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+           <div class="footer-section">
+        <h4>Project Author</h4>
+        <div class="author-card">
+            <img src="https://via.placeholder.com/76" alt="Author Avatar" class="author-avatar">
+            <div class="author-name">Arnav Singh</div>
+            <div class="author-role">Machine Learning Enthusiast & Aspiring Data Scientist</div>
+            <div class="author-tag">Project Creator</div>
+        </div>
+    </div>
+</div>
+
+    <div class="footer-divider">
+    <div class="copyright">
+        © 2026 <span>LoanSahayak</span> — All Rights Reserved | AI · Credit · Intelligence
+    </div>
+
+    <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Support</a>
+    </div>
+</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
