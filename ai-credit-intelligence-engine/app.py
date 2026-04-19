@@ -587,8 +587,8 @@ st.sidebar.markdown("""
 # -----------------------------------
 # Load Model
 # -----------------------------------
-model = pickle.load(open("models/loan_model.pkl", "rb"))
-scaler = pickle.load(open("models/scaler.pkl", "rb"))
+model = pickle.load(open("loan_model.pkl", "rb"))
+scaler = pickle.load(open("scaler.pkl", "rb"))
 
 # -----------------------------------
 # EMI Calculator
