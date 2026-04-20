@@ -588,9 +588,10 @@ st.sidebar.markdown("""
 # -----------------------------------
 # Load Model
 # -----------------------------------
-model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'loan_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), 'models', 'loan_model.pkl')
 model = pickle.load(open(model_path, "rb"))
-scaler_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'scaler.pkl')
+
+scaler_path = os.path.join(os.path.dirname(__file__), 'models', 'scaler.pkl')
 scaler = pickle.load(open(scaler_path, "rb"))
 
 # -----------------------------------
