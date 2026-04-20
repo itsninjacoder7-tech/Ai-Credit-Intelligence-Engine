@@ -588,10 +588,9 @@ st.sidebar.markdown("""
 # -----------------------------------
 # Load Model
 # -----------------------------------
-model_path = os.path.join(os.path.dirname(__file__), 'models', 'loan_model.pkl')
+model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'loan_model.pkl')
 model = pickle.load(open(model_path, "rb"))
-
-scaler_path = os.path.join(os.path.dirname(__file__), 'models', 'scaler.pkl')
+scaler_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'scaler.pkl')
 scaler = pickle.load(open(scaler_path, "rb"))
 
 # -----------------------------------
@@ -674,6 +673,180 @@ with col7:
     employer_category = employer_category_dict[st.selectbox("Employer Category", list(employer_category_dict.keys()))]
 
 # -----------------------------------
+#Loan Affordability Checker
+# -----------------------------------
+st.markdown("""
+<div class="section-header">
+    <div class="section-icon">💰</div>
+    <div class="section-title">Loan Affordability Checker</div>
+    <div class="section-desc">Know your borrowing capacity</div>
+</div>
+""", unsafe_allow_html=True)
+
+# Only show if income is entered
+if applicant_income + coapplicant_income > 0:
+    total_monthly_income = applicant_income + coapplicant_income
+    
+    # Bank's standard: EMI should not exceed 40-50% of monthly income
+    # Conservative: 40%, Aggressive: 50%
+    emi_percentage = 40  # Using conservative 40% for safety
+    
+    max_emi_allowed = total_monthly_income * (emi_percentage / 100)
+    
+    # Calculate maximum loan amount based on EMI capacity
+    # Using standard interest rate of 10% per annum
+    annual_interest_rate = 10
+    monthly_interest_rate = annual_interest_rate / 12 / 100
+    
+    if loan_term > 0 and monthly_interest_rate > 0:
+        # EMI formula reversed to calculate principal: P = EMI * ((1+r)^n - 1) / (r*(1+r)^n)
+        max_loan_amount = max_emi_allowed * (
+            ((1 + monthly_interest_rate) ** loan_term - 1) / 
+            (monthly_interest_rate * (1 + monthly_interest_rate) ** loan_term)
+        )
+    else:
+        max_loan_amount = 0
+    
+    # Calculate current EMI (if loan amount entered)
+    current_emi = calculate_emi(loan_amount, loan_term) if loan_amount > 0 else 0
+    current_emi_ratio = (current_emi / total_monthly_income * 100) if total_monthly_income > 0 and current_emi > 0 else 0
+    
+    # Display metrics
+    col_a, col_b, col_c = st.columns(3)
+    
+    with col_a:
+        st.metric(
+            "Total Monthly Income", 
+            f"₹ {total_monthly_income:,.0f}",
+            help="Combined income of applicant and co-applicant"
+        )
+    
+    with col_b:
+        st.metric(
+            "Maximum EMI You Can Afford", 
+            f"₹ {max_emi_allowed:,.0f}/month",
+            help=f"Banks typically cap EMI at {emi_percentage}% of monthly income"
+        )
+    
+    with col_c:
+        st.metric(
+            "Estimated Maximum Loan", 
+            f"₹ {max_loan_amount:,.0f}",
+            help=f"Based on {annual_interest_rate}% interest rate over {loan_term} months"
+        )
+    st.markdown("---")
+    
+    # Important Note - Now using consistent font
+    st.markdown("""
+    <div class="section-header" style="margin-top: 20px; margin-bottom: 10px; border-bottom: none;">
+        <div class="section-title" style="font-size: 18px !important;">Important Note</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.info("""
+    **This is an approximate affordability estimate only.**  
+    Final approval depends on multiple factors including credit score, employment stability, savings, collateral, and the model's internal risk assessment.
+    """)
+    
+    # Additional Risk Factors - Now using consistent font
+    st.markdown("""
+    <div class="section-header" style="margin-top: 20px; margin-bottom: 10px; border-bottom: none;">
+        <div class="section-title" style="font-size: 18px !important;">Additional Risk Factors</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    risk_warnings = []
+    
+    if credit_score < 600:
+        risk_warnings.append(f"Low credit score ({credit_score})")
+    elif credit_score < 700:
+        risk_warnings.append(f"Fair credit score ({credit_score}) - consider improving")
+    
+    if total_monthly_income < 25000:
+        risk_warnings.append(f"Income below ₹25,000/month")
+    
+    if savings == 0:
+        risk_warnings.append("No savings detected")
+    elif savings < loan_amount * 0.1 and loan_amount > 0:
+        risk_warnings.append(f"Low savings ({(savings/loan_amount*100):.1f}% of loan)")
+    
+    if dependents > 3:
+        risk_warnings.append(f"High dependents ({dependents})")
+    
+    if existing_loans > 2:
+        risk_warnings.append(f"Multiple existing loans ({existing_loans})")
+    
+    if employment_status == 0:
+        risk_warnings.append("Unemployed status")
+    
+    if risk_warnings:
+        for warning in risk_warnings:
+            st.warning(warning)
+    else:
+        st.success("No major risk factors detected")
+    
+    # Warning or success based on requested loan
+    if loan_amount > 0:
+        if loan_amount > max_loan_amount:
+            excess_amount = loan_amount - max_loan_amount
+            excess_percentage = (excess_amount / max_loan_amount) * 100
+            
+            st.error(f"""
+            **Loan Amount Exceeds Affordability Limit**
+            
+            - Requested: ₹ {loan_amount:,.0f}
+            - Affordable Limit: ₹ {max_loan_amount:,.0f}
+            - Excess: ₹ {excess_amount:,.0f} ({excess_percentage:.0f}% above limit)
+            
+            **Recommendation:** Consider reducing loan amount or increasing loan tenure.
+            """)
+            
+            # Suggest alternative loan amount
+            suggested_tenure = min(360, loan_term + 12)  # Suggest longer tenure
+            suggested_emi = calculate_emi(max_loan_amount, suggested_tenure)
+            
+            st.info(f"""
+            **Alternative Suggestion:**
+            - Reduce loan amount to ₹ {max_loan_amount:,.0f}
+            - Or increase tenure to {suggested_tenure} months (EMI: ₹ {suggested_emi:,.0f}/month)
+            """)
+            
+        else:
+            buffer_amount = max_loan_amount - loan_amount
+            buffer_percentage = (buffer_amount / max_loan_amount) * 100
+            
+            st.success(f"""
+            **Loan Amount Within Affordable Range**
+            
+            - Requested: ₹ {loan_amount:,.0f}
+            - Affordable Limit: ₹ {max_loan_amount:,.0f}
+            - Buffer: ₹ {buffer_amount:,.0f} ({buffer_percentage:.0f}% below limit)
+            
+            Your EMI of approximate ₹ {current_emi:,.0f}/month is {current_emi_ratio:.1f}% of your income.
+            """)
+    
+    # Show EMI breakdown
+    if current_emi > 0:
+        st.caption(f"**Current EMI:** ₹ {current_emi:,.0f}/month ({current_emi_ratio:.1f}% of income)")
+        
+        # Progress bar for EMI utilization
+        emi_utilization_percentage = min(100, (current_emi / max_emi_allowed * 100) if max_emi_allowed > 0 else 0)
+        
+        st.markdown("**EMI Utilization of Affordable Limit:**")
+        st.progress(int(emi_utilization_percentage))
+        
+        if emi_utilization_percentage > 100:
+            st.warning("Your EMI exceeds the recommended limit!")
+        elif emi_utilization_percentage > 80:
+            st.info("Your EMI is close to the recommended limit. Consider reducing loan amount.")
+        else:
+            st.success("Your EMI is within comfortable limits.")
+            
+else:
+    st.info("Enter applicant/coapplicant income to see loan affordability analysis")
+    
+st.markdown("---")
+# -----------------------------------
 # Analyse Button
 # -----------------------------------
 st.markdown("<div style='margin-top: 36px;'></div>", unsafe_allow_html=True)
@@ -691,7 +864,7 @@ if run:
     if applicant_income == 0 or loan_amount == 0:
         st.error("⚠ Income and Loan Amount must be greater than zero.")
         st.stop()
-        
+
     import time
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
     from reportlab.lib import colors
