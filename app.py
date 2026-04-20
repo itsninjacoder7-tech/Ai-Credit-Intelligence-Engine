@@ -482,7 +482,7 @@ def render_background_inputs() -> dict:
     )
 
 
-def render_affordability(fin: dict) -> None:
+def render_affordability(fin: dict, bg: dict) -> None:
     section_header("💰", "Loan Affordability Checker", "Know your borrowing capacity")
 
     total_income = fin["applicant_income"] + fin["coapplicant_income"]
@@ -513,7 +513,7 @@ def render_affordability(fin: dict) -> None:
 
     # ── Risk warnings ──
     section_header("⚠️", "Risk Factors")
-    warnings = _collect_risk_warnings(fin, total_income)
+    warnings = _collect_risk_warnings(fin, bg, total_income)
     if warnings:
         for w in warnings:
             st.warning(w)
@@ -557,7 +557,7 @@ def render_affordability(fin: dict) -> None:
             st.success("EMI is within comfortable limits.")
 
 
-def _collect_risk_warnings(fin: dict, total_income: float) -> list[str]:
+def _collect_risk_warnings(fin: dict, bg: dict, total_income: float) -> list[str]:
     warns = []
     if fin["credit_score"] < MIN_CREDIT_SCORE:
         warns.append(f"Low credit score ({fin['credit_score']}) — minimum recommended: {MIN_CREDIT_SCORE}")
@@ -573,7 +573,7 @@ def _collect_risk_warnings(fin: dict, total_income: float) -> list[str]:
         warns.append(f"High number of dependents ({fin['dependents']})")
     if fin["existing_loans"] > MAX_EXISTING_LOANS:
         warns.append(f"Multiple existing loans ({fin['existing_loans']})")
-    if fin["employment_status"] == 0:
+    if bg["employment_status"] == 0:
         warns.append("Currently unemployed — high risk factor")
     return warns
 
@@ -806,7 +806,7 @@ def main() -> None:
     financial_inputs   = render_financial_inputs()
     background_inputs  = render_background_inputs()
 
-    render_affordability(financial_inputs)
+    render_affordability(financial_inputs, background_inputs)
 
     st.markdown("<div style='margin-top:36px;'></div>", unsafe_allow_html=True)
     _, col_btn, _ = st.columns([1, 1.2, 1])
