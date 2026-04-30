@@ -3,8 +3,9 @@ import os
 import pandas as pd
 import pickle
 import numpy as np
+import hashlib
 
-# -----------------------------------
+
 # Page Config
 # -----------------------------------
 st.set_page_config(
@@ -12,6 +13,229 @@ st.set_page_config(
     page_icon="🏦",
     layout="wide"
 )
+
+# -----------------------------------
+# EARLY FONT & BASE STYLING (must run before show_auth)
+# -----------------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --bg-deep: #070B14;
+    --border: rgba(201,168,76,0.2);
+    --border-bright: rgba(201,168,76,0.5);
+    --text-primary: #F0EBE0;
+    --text-secondary: #9A9080;
+    --text-muted: #5A5448;
+}
+
+html, body, [data-testid="stAppViewContainer"] {
+    background: var(--bg-deep) !important;
+    color: var(--text-primary) !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+/* Auth page headings */
+h1, h2, h3, .stMarkdown h2 {
+    font-family: 'Playfair Display', serif !important;
+    color: var(--text-primary) !important;
+}
+
+/* Radio buttons */
+.stRadio label {
+    color: var(--text-secondary) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 14px !important;
+}
+
+/* Input labels */
+label, [data-testid="stWidgetLabel"] {
+    color: var(--text-secondary) !important;
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+/* Text inputs */
+.stTextInput input {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    color: var(--text-primary) !important;
+    font-size: 15px !important;
+    font-family: 'DM Sans', sans-serif !important;
+}
+
+.stTextInput input:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 0 3px var(--gold-dim) !important;
+}
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%) !important;
+    color: #070B14 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    height: 50px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    width: 100% !important;
+    font-family: 'DM Sans', sans-serif !important;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.25) !important;
+    transition: all 0.25s ease !important;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.4) !important;
+}
+
+/* Alert boxes */
+.stSuccess, .stError, .stWarning, .stInfo {
+    border-radius: 14px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 15px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# -----------------------------------
+# USER DATABASE FUNCTIONS
+# -----------------------------------
+USER_FILE = "users.csv"
+
+def load_users():
+    if os.path.exists(USER_FILE):
+        return pd.read_csv(USER_FILE)
+    else:
+        return pd.DataFrame(columns=["username", "password"])
+
+def save_user(username, password):
+    df = load_users()
+    new_user = pd.DataFrame([[username, password]], columns=["username", "password"])
+    df = pd.concat([df, new_user], ignore_index=True)
+    df.to_csv(USER_FILE, index=False)
+
+def update_password(username, new_password):
+    df = load_users()
+    df.loc[df["username"] == username, "password"] = hash_password(new_password)
+    df.to_csv(USER_FILE, index=False)
+
+# -----------------------------------
+# PASSWORD HASHING
+# -----------------------------------
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# ---------------- SESSION ----------------
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "username" not in st.session_state:
+    st.session_state.username = None
+        
+
+import re
+
+def is_valid_username(username):
+    return re.match(r"^[a-zA-Z0-9_.]{4,20}$", username)
+
+def is_valid_password(password):
+    return (
+        len(password) >= 6 and
+        re.search(r"[A-Z]", password) and
+        re.search(r"[a-z]", password) and
+        re.search(r"[0-9]", password)
+    )
+
+# ---------------- AUTH UI ----------------
+def show_auth():
+    st.markdown("## 🔐 Welcome to LoanSahayak")
+
+    choice = st.radio("Select Option", ["Login", "Signup"])
+    users = load_users()
+
+    # -------- LOGIN --------
+    if choice == "Login":
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+
+        if st.button("Login"):
+
+            if username == "" or password == "":
+                st.warning("Please enter both fields")
+
+            else:
+                user = users[
+                    (users["username"] == username) &
+                    (users["password"] == hash_password(password))
+                ]
+
+                if not user.empty:
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.success("Login Successful!")
+                    st.rerun()
+                else:
+                    st.error("Invalid username or password")
+
+    # -------- SIGNUP --------
+    else:
+        new_user = st.text_input("Create Username")
+        new_pass = st.text_input("Create Password", type="password")
+        confirm_pass = st.text_input("Confirm Password", type="password")
+
+        if st.button("Signup"):
+
+            if new_user == "" or new_pass == "":
+                st.warning("Fields cannot be empty")
+
+            elif not is_valid_username(new_user):
+                st.error("Username must be 4-20 chars (letters, numbers, _ . only)")
+
+            elif not is_valid_password(new_pass):
+                st.error("Password must have uppercase, lowercase & number")
+
+            elif new_pass != confirm_pass:
+                st.error("Passwords do not match")
+
+            elif new_user.lower() in users["username"].str.lower().values:
+                st.warning("Username already exists")
+
+            else:
+                save_user(new_user, hash_password(new_pass))
+                st.success("Account created successfully! Please login.")
+
+# -----------------------------------
+# LOGIN CHECK
+# -----------------------------------
+if not st.session_state.logged_in:
+    show_auth()
+    st.stop()
+
+st.markdown(f"""
+<div style="
+    padding: 14px 20px;
+    border-radius: 12px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: #E8C97A;
+    font-size: 16px;
+    margin-bottom: 18px;
+">
+    👋 Welcome !! <b>{st.session_state.username}</b> ..System status: Active. LoanSahayak is ready to transform your data into definitive financial insights
+</div>
+""", unsafe_allow_html=True)
+
 
 # -----------------------------------
 # Premium UI Styling — Luxury Finance Aesthetic
@@ -337,6 +561,7 @@ input[type="number"]:focus {
     background: #070B14 !important;
     border-right: 1px solid var(--border) !important;
 }
+     
 
 [data-testid="stSidebar"] .stMarkdown p,
 [data-testid="stSidebar"] .stMarkdown li,
@@ -436,6 +661,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
 # -----------------------------------
 # Sidebar
 # -----------------------------------
@@ -452,6 +678,10 @@ st.sidebar.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+
+        
+    
 
 # System Info (Improved readability)
 st.sidebar.markdown("""
@@ -593,6 +823,20 @@ model = pickle.load(open(model_path, "rb"))
 
 scaler_path = os.path.join(os.path.dirname(__file__), 'models', 'scaler.pkl')
 scaler = pickle.load(open(scaler_path, "rb")) 
+
+try:
+    model = pickle.load(open(model_path, "rb"))
+    scaler = pickle.load(open(scaler_path, "rb"))
+except FileNotFoundError:
+    st.error("### ⚠️ Model Files Not Found")
+    st.info("""
+    The required AI models (**loan_model.pkl** and **scaler.pkl**) are missing from the `models/` directory.
+    
+    **How to fix:**
+    1. Place the `.pkl` files in the `models/` folder.
+    2. Refer to `docs/setup.md` for detailed instructions.
+    """)
+    st.stop()
 
 # -----------------------------------
 # EMI Calculator
@@ -799,7 +1043,7 @@ if run:
 
         # Income check
         if total_income < 25000:
-            reasons.append("Total household income is below the recommended threshold (₹25,000).")
+            reasons.append("Total household income is below the recommended threshold (Rs.25,000).")
 
         # EMI ratio check
         if emi_ratio > 0.5:
@@ -835,8 +1079,9 @@ if run:
     # -----------------------------------
     # PREMIUM PDF REPORT
     # -----------------------------------
-    pdf_path = "loan_report.pdf"
-    doc = SimpleDocTemplate(pdf_path, pagesize=A4)
+    import io
+    pdf_buffer = io.BytesIO()
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=A4)
     styles = getSampleStyleSheet()
 
     title_style = ParagraphStyle(
@@ -863,13 +1108,12 @@ if run:
     # Financial Table
     content.append(Paragraph("Financial Summary", section_style))
     content.append(Spacer(1, 10))
-
     table = Table([
         ["Metric", "Value"],
-        ["Total Income", f"₹ {total_income:,}"],
-        ["Loan Amount", f"₹ {loan_amount:,}"],
+        ["Total Income", f"Rs. {total_income:,}"],
+        ["Loan Amount", f"Rs. {loan_amount:,}"],
         ["Loan Term", f"{loan_term} months"],
-        ["EMI", f"₹ {round(emi,2)}"]
+        ["EMI", f"Rs. {round(emi,2)}"]
     ])
 
     table.setStyle(TableStyle([
@@ -908,7 +1152,10 @@ if run:
 
     content.append(Paragraph(decision_text, decision_style))
     content.append(Spacer(1, 10))
-    content.append(Paragraph(f"Confidence: {round(approval_prob,2)}%", styles["Normal"]))
+    #Updated confidence and rejection label 
+    confidence = round(approval_prob, 2) if prediction[0] == 1 else round(100 - approval_prob, 2)
+    label = "Approval Confidence" if prediction[0] == 1 else "Rejection Confidence"
+    content.append(Paragraph(f"{label}: {confidence}%", styles["Normal"]))
     content.append(Spacer(1, 20))
 
     # -------------------------------
@@ -928,15 +1175,15 @@ if run:
     content.append(Paragraph("Generated by LoanSahayak AI", styles["Italic"]))
 
     doc.build(content)
-    
+    pdf_buffer.seek(0)
+
     # Download Button
-    with open(pdf_path, "rb") as f:
-        st.download_button(
-            label="📄 Download Premium PDF Report",
-            data=f,
-            file_name="LoanSahayak_Report.pdf",
-            mime="application/pdf"
-        )
+    st.download_button(
+        label="📄 Download PDF Report",
+        data=pdf_buffer,
+        file_name="LoanSahayak_Report.pdf",
+        mime="application/pdf"
+    )
 
 # -----------------------------------
 # Footer
